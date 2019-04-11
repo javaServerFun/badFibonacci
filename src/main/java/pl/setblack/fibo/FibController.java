@@ -12,29 +12,31 @@ import reactor.core.publisher.Mono;
 
 import java.time.Duration;
 
-/**
- * Here should be htttp-recursive fibonacci.
- *
- *
- * Please fix it.
- */
-
 @Controller
 public class FibController {
 
-    @RequestMapping(value = "/fib/{n}", method = RequestMethod.GET)
+    @RequestMapping(value="/fib/{n}",method= RequestMethod.GET)
     @ResponseBody
     public String fib(@PathVariable("n") int n) {
-        Mono<Integer> n_1 = WebClient.create("http://localhost:8080")
-                .get().uri("/fib/{n}", (n - 1))
-                .accept(MediaType.TEXT_HTML)
-                .exchange().flatMap(resp -> resp.bodyToMono(String.class))
-                .map(Integer::parseInt);
 
-        Integer a = n_1.block(Duration.ofMinutes(1));
+        if (n < 2) {
+            return String.valueOf(n);
+        } else {
+            Mono<Integer> n_1 = WebClient.create("http://localhost:8080")
+                    .get().uri("/fib/{n}", (n - 1))
+                    .accept(MediaType.TEXT_HTML)
+                    .exchange().flatMap(resp -> resp.bodyToMono(String.class))
+                    .map(Integer::parseInt);
+            Mono<Integer> n_2 = WebClient.create("http://localhost:8080")
+                    .get().uri("/fib/{n}", (n - 2))
+                    .accept(MediaType.TEXT_HTML)
+                    .exchange().flatMap(resp -> resp.bodyToMono(String.class))
+                    .map(Integer::parseInt);
 
+            Integer a = n_1.block(Duration.ofMinutes(1));
+            Integer b = n_2.block(Duration.ofMinutes(1));
 
-        return String.valueOf(a + 1);
-
+            return  String.valueOf(a + b);
+        }
     }
 }
