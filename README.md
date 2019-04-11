@@ -13,4 +13,14 @@ It should be recursive ... on http
 
 curl http://localhost:8080/fib/n
 
-should reaturn an n-th fibonacci number  
+should return an n-th fibonacci number  
+
+
+## hints
+
+see `FibController.java`
+
+
+## problem
+
+calculate fibonacci 20-30 with this implementation
